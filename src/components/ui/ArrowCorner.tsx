@@ -11,7 +11,7 @@ interface ArrowCornerProps {
   tone?: Tone
   size?: Size
   position?: 'br' | 'bl'
-  href?: string
+  href: string
   label?: string
 }
 
@@ -38,7 +38,7 @@ export default function ArrowCorner({
   tone = 'accent',
   size = 'md',
   position = 'br',
-  href = '#',
+  href,
   label = 'Read article',
 }: ArrowCornerProps) {
   const { radius, pad, button, icon } = sizeConfig[size]

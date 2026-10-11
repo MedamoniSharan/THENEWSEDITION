@@ -14,7 +14,7 @@ export default function Logo({ variant = 'main', className }: LogoProps) {
   const sizeClass = className ?? (variant === 'main' ? 'h-14 md:h-20' : 'h-16')
 
   return (
-    <a href="#" className="inline-flex shrink-0 items-center" aria-label="TheNewsEdition home">
+    <a href="#/" className="inline-flex shrink-0 items-center" aria-label="TheNewsEdition home">
       <img src={src} width={width} height={height} alt="The News Edition" className={`${sizeClass} w-auto`} />
     </a>
   )

@@ -7,12 +7,12 @@ export default function CtaBanner() {
       <h2 className="mt-6 max-w-2xl text-4xl leading-[1.1] font-semibold tracking-tight text-ink md:text-6xl">
         Find News that Meet With Your Needs
       </h2>
-      <a
-        href="#"
+      <button
+        type="button"
         className="mt-8 rounded-full bg-accent px-7 py-3 text-sm font-semibold text-white shadow-[0_10px_30px_-10px_var(--color-accent)] transition-colors hover:bg-accent-dark"
       >
         Subscribe Now
-      </a>
+      </button>
     </section>
   )
 }

@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { latestArticles } from '../data/news'
+import { articleHref } from '../hooks/useCategoryRoute'
 import AuthorChip from './ui/AuthorChip'
+import CategoryTag from './ui/CategoryTag'
 import SectionHeader from './ui/SectionHeader'
 
 export default function LatestNews() {
@@ -45,7 +47,7 @@ export default function LatestNews() {
   )
 
   return (
-    <section className="py-12 md:py-16">
+    <section id="latest" className="scroll-mt-6 py-12 md:py-16">
       <SectionHeader
         title="Latest News"
         action={
@@ -77,8 +79,9 @@ export default function LatestNews() {
             </div>
             <div className="flex min-w-0 flex-col justify-between py-0.5">
               <div>
-                <h3 className="line-clamp-3 text-base leading-snug font-semibold text-ink">
-                  <a href="#" className="hover:text-accent">
+                <CategoryTag category={article.category} />
+                <h3 className="mt-1 line-clamp-2 text-base leading-snug font-semibold text-ink">
+                  <a href={articleHref(article)} className="hover:text-accent">
                     {article.title}
                   </a>
                 </h3>

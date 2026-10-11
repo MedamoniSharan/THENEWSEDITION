@@ -1,11 +1,13 @@
 import { popularArticles, popularFeature } from '../data/news'
+import { articleHref } from '../hooks/useCategoryRoute'
 import ArrowCorner from './ui/ArrowCorner'
 import AuthorChip from './ui/AuthorChip'
+import CategoryTag from './ui/CategoryTag'
 import SectionHeader from './ui/SectionHeader'
 
 export default function PopularStory() {
   return (
-    <section className="bg-ink py-14 md:py-20">
+    <section id="popular" className="bg-ink py-14 md:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader title="Popular Story" variant="dark" />
 
@@ -17,12 +19,21 @@ export default function PopularStory() {
               loading="lazy"
               className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
-            <ArrowCorner surface="ink" tone="paper" size="md" label={popularFeature.title} />
+            <ArrowCorner
+              surface="ink"
+              tone="paper"
+              size="md"
+              label={popularFeature.title}
+              href={articleHref(popularFeature)}
+            />
           </div>
 
           <div>
+            <div className="mb-4">
+              <CategoryTag category={popularFeature.category} variant="pill" />
+            </div>
             <h3 className="text-3xl leading-[1.1] font-semibold tracking-tight text-white md:text-[2.5rem]">
-              <a href="#" className="hover:text-accent">
+              <a href={articleHref(popularFeature)} className="hover:text-accent">
                 {popularFeature.title}
               </a>
             </h3>
@@ -50,11 +61,14 @@ export default function PopularStory() {
                 />
               </div>
               <div className="flex min-w-0 flex-col justify-between py-0.5">
-                <h4 className="line-clamp-3 text-[15px] leading-snug font-semibold text-white">
-                  <a href="#" className="hover:text-accent">
-                    {article.title}
-                  </a>
-                </h4>
+                <div>
+                  <CategoryTag category={article.category} variant="text-dark" />
+                  <h4 className="mt-1 line-clamp-2 text-[15px] leading-snug font-semibold text-white">
+                    <a href={articleHref(article)} className="hover:text-accent">
+                      {article.title}
+                    </a>
+                  </h4>
+                </div>
                 <div className="mt-2">
                   <AuthorChip author={article.author} variant="dark" />
                 </div>

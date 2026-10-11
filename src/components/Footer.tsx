@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react'
+import { categories } from '../data/news'
+import { categoryHref, homeHref } from '../hooks/useCategoryRoute'
 import Logo from './ui/Logo'
 
 const socials: { label: string; href: string; icon: ReactNode }[] = [
@@ -32,14 +34,19 @@ const socials: { label: string; href: string; icon: ReactNode }[] = [
   },
 ]
 
-const columns: { title: string; links: string[] }[] = [
-  {
-    title: 'Menu',
-    links: ['Home', 'Sport', 'Economy', 'Politics', 'Technology', 'Science', 'Lifestyle', 'World'],
-  },
+const columns: { title: string; links: { label: string; href: string }[] }[] = [
   {
     title: 'Categories',
-    links: ['Latest News', 'Popular Story', 'Highlight', 'Hot News', 'Editor’s Pick', 'Opinion'],
+    links: categories.map((c) => ({ label: c.name, href: categoryHref(c.slug) })),
+  },
+  {
+    title: 'Sections',
+    links: [
+      { label: 'Home', href: homeHref },
+      { label: 'Latest News', href: '#latest' },
+      { label: 'Popular Story', href: '#popular' },
+      { label: 'Highlight', href: '#highlight' },
+    ],
   },
 ]
 
@@ -77,9 +84,9 @@ export default function Footer() {
               </h3>
               <ul className="mt-5 space-y-3">
                 {col.links.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-sm text-white/80 transition-colors hover:text-accent">
-                      {link}
+                  <li key={link.label}>
+                    <a href={link.href} className="text-sm text-white/80 transition-colors hover:text-white">
+                      {link.label}
                     </a>
                   </li>
                 ))}

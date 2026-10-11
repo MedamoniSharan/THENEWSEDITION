@@ -1,6 +1,8 @@
 import { heroArticle, sideArticles, type Article } from '../data/news'
+import { articleHref } from '../hooks/useCategoryRoute'
 import ArrowCorner from './ui/ArrowCorner'
 import AuthorChip from './ui/AuthorChip'
+import CategoryTag from './ui/CategoryTag'
 
 function SideStory({ article }: { article: Article }) {
   return (
@@ -12,12 +14,13 @@ function SideStory({ article }: { article: Article }) {
           loading="lazy"
           className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <ArrowCorner size="sm" tone="ink" position="bl" label={article.title} />
+        <ArrowCorner size="sm" tone="ink" position="bl" label={article.title} href={articleHref(article)} />
       </div>
       <div className="flex min-w-0 flex-col justify-between py-0.5">
         <div>
-          <h3 className="line-clamp-3 text-base leading-snug font-semibold text-ink">
-            <a href="#" className="hover:text-accent">
+          <CategoryTag category={article.category} />
+          <h3 className="mt-1 line-clamp-2 text-base leading-snug font-semibold text-ink">
+            <a href={articleHref(article)} className="hover:text-accent">
               {article.title}
             </a>
           </h3>
@@ -43,11 +46,11 @@ export default function FeaturedGrid() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 
         <div className="relative flex h-full min-h-[inherit] flex-col justify-end p-6 pr-28 md:p-10 md:pr-36">
-          <span className="mb-4 w-fit rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold tracking-wider text-white uppercase backdrop-blur">
-            {heroArticle.category}
-          </span>
+          <div className="mb-4">
+            <CategoryTag category={heroArticle.category} variant="pill" />
+          </div>
           <h2 className="max-w-xl text-3xl leading-[1.1] font-semibold tracking-tight text-white md:text-[2.75rem]">
-            <a href="#">{heroArticle.title}</a>
+            <a href={articleHref(heroArticle)}>{heroArticle.title}</a>
           </h2>
           <p className="mt-4 line-clamp-2 max-w-lg text-sm leading-relaxed text-white/70">
             {heroArticle.excerpt}
@@ -57,7 +60,7 @@ export default function FeaturedGrid() {
           </div>
         </div>
 
-        <ArrowCorner size="lg" tone="accent" label={heroArticle.title} />
+        <ArrowCorner size="lg" tone="accent" label={heroArticle.title} href={articleHref(heroArticle)} />
       </article>
 
       <div className="flex flex-col justify-between gap-6">
