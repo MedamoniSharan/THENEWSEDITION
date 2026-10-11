@@ -10,6 +10,7 @@ import Navbar from './components/Navbar'
 import PopularStory from './components/PopularStory'
 import Testimonials from './components/Testimonials'
 import Ticker from './components/Ticker'
+import YouTubeSection from './components/YouTubeSection'
 import { useCategoryRoute } from './hooks/useCategoryRoute'
 
 const container = 'mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'
@@ -43,6 +44,7 @@ export default function App() {
 
             <div className={container}>
               <Highlight />
+              <YouTubeSection />
             </div>
 
             <Testimonials />

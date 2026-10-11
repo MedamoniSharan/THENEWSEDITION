@@ -52,6 +52,7 @@ export default function Footer() {
         { label: t.latestNews, href: '#latest' },
         { label: t.popularStory, href: '#popular' },
         { label: t.highlight, href: '#highlight' },
+        { label: t.videos, href: '#videos' },
       ],
     },
   ]
