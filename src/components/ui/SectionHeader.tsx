@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { ArrowUpRight } from 'lucide-react'
+import { useLanguage } from '../../i18n/language'
 
 interface SectionHeaderProps {
   title: string
@@ -10,6 +11,8 @@ interface SectionHeaderProps {
 }
 
 export default function SectionHeader({ title, variant = 'light', href = '#', action }: SectionHeaderProps) {
+  const { t } = useLanguage()
+
   return (
     <div className="mb-6 flex items-center justify-between gap-4">
       <h2
@@ -22,7 +25,7 @@ export default function SectionHeader({ title, variant = 'light', href = '#', ac
           href={href}
           className="group inline-flex items-center gap-1.5 rounded-full bg-accent py-1.5 pr-1.5 pl-4 text-xs font-semibold text-white transition-colors hover:bg-accent-dark"
         >
-          View More
+          {t.viewMore}
           <span className="grid size-6 place-items-center rounded-full bg-white text-accent">
             <ArrowUpRight
               size={14}

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { categories } from '../data/news'
 import { categoryHref, homeHref } from '../hooks/useCategoryRoute'
+import { useLanguage } from '../i18n/language'
 import Logo from './ui/Logo'
 
 const socials: { label: string; href: string; icon: ReactNode }[] = [
@@ -34,25 +35,27 @@ const socials: { label: string; href: string; icon: ReactNode }[] = [
   },
 ]
 
-const columns: { title: string; links: { label: string; href: string }[] }[] = [
-  {
-    title: 'Categories',
-    links: categories.map((c) => ({ label: c.name, href: categoryHref(c.slug) })),
-  },
-  {
-    title: 'Sections',
-    links: [
-      { label: 'Home', href: homeHref },
-      { label: 'Latest News', href: '#latest' },
-      { label: 'Popular Story', href: '#popular' },
-      { label: 'Highlight', href: '#highlight' },
-    ],
-  },
-]
-
 const currentYear = new Date().getFullYear()
 
 export default function Footer() {
+  const { t, tr } = useLanguage()
+
+  const columns: { title: string; links: { label: string; href: string }[] }[] = [
+    {
+      title: t.categories,
+      links: categories.map((c) => ({ label: tr(c.name), href: categoryHref(c.slug) })),
+    },
+    {
+      title: t.sections,
+      links: [
+        { label: t.home, href: homeHref },
+        { label: t.latestNews, href: '#latest' },
+        { label: t.popularStory, href: '#popular' },
+        { label: t.highlight, href: '#highlight' },
+      ],
+    },
+  ]
+
   return (
     <footer className="bg-ink text-white">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 pt-16 pb-10 sm:px-6 md:grid-cols-[auto_1fr] lg:px-8">
@@ -84,7 +87,7 @@ export default function Footer() {
               </h3>
               <ul className="mt-5 space-y-3">
                 {col.links.map((link) => (
-                  <li key={link.label}>
+                  <li key={link.href}>
                     <a href={link.href} className="text-sm text-white/80 transition-colors hover:text-white">
                       {link.label}
                     </a>
@@ -95,7 +98,7 @@ export default function Footer() {
           ))}
 
           <div className="md:min-w-40">
-            <h3 className="text-xs font-semibold tracking-[0.14em] text-white/40 uppercase">Contact</h3>
+            <h3 className="text-xs font-semibold tracking-[0.14em] text-white/40 uppercase">{t.contact}</h3>
             <ul className="mt-5 space-y-3 text-sm text-white/80">
               <li>
                 <a href="tel:+11234567890" className="hover:text-accent">
@@ -109,7 +112,7 @@ export default function Footer() {
               </li>
               <li>
                 <a href="#" className="text-accent underline underline-offset-4 hover:text-white">
-                  Get Directions
+                  {t.getDirections}
                 </a>
               </li>
             </ul>
@@ -119,7 +122,7 @@ export default function Footer() {
 
       <div className="mx-auto flex max-w-7xl flex-col gap-3 border-t border-white/10 px-4 py-6 text-xs text-white/40 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
         <span>THENEWSEDITION</span>
-        <span>© {currentYear} TheNewsEdition. All rights reserved.</span>
+        <span>{t.copyright(currentYear)}</span>
       </div>
     </footer>
   )

@@ -1,10 +1,14 @@
 import { heroArticle, sideArticles, type Article } from '../data/news'
 import { articleHref } from '../hooks/useCategoryRoute'
+import { useLanguage } from '../i18n/language'
 import ArrowCorner from './ui/ArrowCorner'
 import AuthorChip from './ui/AuthorChip'
 import CategoryTag from './ui/CategoryTag'
 
 function SideStory({ article }: { article: Article }) {
+  const { tr } = useLanguage()
+  const title = tr(article.title)
+
   return (
     <article className="group flex gap-4">
       <div className="relative h-32 w-36 shrink-0 overflow-hidden rounded-2xl rounded-bl-none sm:w-44">
@@ -14,17 +18,17 @@ function SideStory({ article }: { article: Article }) {
           loading="lazy"
           className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <ArrowCorner size="sm" tone="ink" position="bl" label={article.title} href={articleHref(article)} />
+        <ArrowCorner size="sm" tone="ink" position="bl" label={title} href={articleHref(article)} />
       </div>
       <div className="flex min-w-0 flex-col justify-between py-0.5">
         <div>
           <CategoryTag category={article.category} />
           <h3 className="mt-1 line-clamp-2 text-base leading-snug font-semibold text-ink">
             <a href={articleHref(article)} className="hover:text-accent">
-              {article.title}
+              {title}
             </a>
           </h3>
-          <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-ink/55">{article.excerpt}</p>
+          <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-ink/55">{tr(article.excerpt)}</p>
         </div>
         <div className="mt-2">
           <AuthorChip author={article.author} />
@@ -35,6 +39,9 @@ function SideStory({ article }: { article: Article }) {
 }
 
 export default function FeaturedGrid() {
+  const { tr } = useLanguage()
+  const heroTitle = tr(heroArticle.title)
+
   return (
     <section className="grid gap-6 lg:grid-cols-[1.55fr_1fr]">
       <article className="group relative min-h-[420px] overflow-hidden rounded-[28px] rounded-br-none md:min-h-[520px]">
@@ -50,17 +57,17 @@ export default function FeaturedGrid() {
             <CategoryTag category={heroArticle.category} variant="pill" />
           </div>
           <h2 className="max-w-xl text-3xl leading-[1.1] font-semibold tracking-tight text-white md:text-[2.75rem]">
-            <a href={articleHref(heroArticle)}>{heroArticle.title}</a>
+            <a href={articleHref(heroArticle)}>{heroTitle}</a>
           </h2>
           <p className="mt-4 line-clamp-2 max-w-lg text-sm leading-relaxed text-white/70">
-            {heroArticle.excerpt}
+            {tr(heroArticle.excerpt)}
           </p>
           <div className="mt-5">
             <AuthorChip author={heroArticle.author} date={heroArticle.date} variant="dark" size="md" />
           </div>
         </div>
 
-        <ArrowCorner size="lg" tone="accent" label={heroArticle.title} href={articleHref(heroArticle)} />
+        <ArrowCorner size="lg" tone="accent" label={heroTitle} href={articleHref(heroArticle)} />
       </article>
 
       <div className="flex flex-col justify-between gap-6">

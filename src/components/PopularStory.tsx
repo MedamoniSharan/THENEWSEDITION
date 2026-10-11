@@ -1,15 +1,19 @@
 import { popularArticles, popularFeature } from '../data/news'
 import { articleHref } from '../hooks/useCategoryRoute'
+import { useLanguage } from '../i18n/language'
 import ArrowCorner from './ui/ArrowCorner'
 import AuthorChip from './ui/AuthorChip'
 import CategoryTag from './ui/CategoryTag'
 import SectionHeader from './ui/SectionHeader'
 
 export default function PopularStory() {
+  const { t, tr } = useLanguage()
+  const featureTitle = tr(popularFeature.title)
+
   return (
     <section id="popular" className="bg-ink py-14 md:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeader title="Popular Story" variant="dark" />
+        <SectionHeader title={t.popularStory} variant="dark" />
 
         <article className="group grid items-center gap-8 lg:grid-cols-[1.2fr_1fr] lg:gap-12">
           <div className="relative aspect-[16/10] overflow-hidden rounded-[28px] rounded-br-none">
@@ -23,7 +27,7 @@ export default function PopularStory() {
               surface="ink"
               tone="paper"
               size="md"
-              label={popularFeature.title}
+              label={featureTitle}
               href={articleHref(popularFeature)}
             />
           </div>
@@ -34,10 +38,10 @@ export default function PopularStory() {
             </div>
             <h3 className="text-3xl leading-[1.1] font-semibold tracking-tight text-white md:text-[2.5rem]">
               <a href={articleHref(popularFeature)} className="hover:text-accent">
-                {popularFeature.title}
+                {featureTitle}
               </a>
             </h3>
-            <p className="mt-5 text-sm leading-relaxed text-white/60">{popularFeature.excerpt}</p>
+            <p className="mt-5 text-sm leading-relaxed text-white/60">{tr(popularFeature.excerpt)}</p>
             <div className="mt-6">
               <AuthorChip
                 author={popularFeature.author}
@@ -65,7 +69,7 @@ export default function PopularStory() {
                   <CategoryTag category={article.category} variant="text-dark" />
                   <h4 className="mt-1 line-clamp-2 text-[15px] leading-snug font-semibold text-white">
                     <a href={articleHref(article)} className="hover:text-accent">
-                      {article.title}
+                      {tr(article.title)}
                     </a>
                   </h4>
                 </div>

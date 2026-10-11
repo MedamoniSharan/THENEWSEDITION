@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Tight", "Noto Sans Telugu", ui-sans-serif, system-ui, sans-serif;
   --color-accent: #d90b0b;
   --color-accent-dark: #b00707;
   --color-ink: #1c1c1c;
@@ -27,6 +27,18 @@
   body {
     @apply bg-paper font-sans text-ink antialiased;
   }
+}
+
+/* Unlayered so it beats the tight leading/tracking utilities: Telugu vowel signs reach above and below the line. */
+:lang(te) :is(h1, h2, h3, h4) {
+  line-height: 1.4;
+  letter-spacing: normal;
+}
+
+/* Telugu has no capitals, and wide tracking splits its letter clusters apart. */
+:lang(te) .uppercase {
+  letter-spacing: normal;
+  font-size: 12px;
 }
 
 @utility corner-cut-l {

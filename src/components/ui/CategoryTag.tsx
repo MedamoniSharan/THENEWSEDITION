@@ -1,8 +1,9 @@
-import { slugOf, type Category } from '../../data/news'
+import { categoryBySlug, type CategorySlug } from '../../data/news'
 import { categoryHref } from '../../hooks/useCategoryRoute'
+import { useLanguage } from '../../i18n/language'
 
 interface CategoryTagProps {
-  category: Category
+  category: CategorySlug
   /** `pill` sits on top of images; `text` and `text-dark` sit above titles on light or dark backgrounds. */
   variant?: 'pill' | 'text' | 'text-dark'
 }
@@ -14,14 +15,15 @@ const variantClass = {
 }
 
 export default function CategoryTag({ category, variant = 'text' }: CategoryTagProps) {
+  const { tr } = useLanguage()
   const className = variantClass[variant]
 
   return (
     <a
-      href={categoryHref(slugOf(category))}
+      href={categoryHref(category)}
       className={`relative z-10 inline-block font-semibold tracking-wider uppercase transition-colors ${className}`}
     >
-      {category}
+      {tr(categoryBySlug(category)!.name)}
     </a>
   )
 }

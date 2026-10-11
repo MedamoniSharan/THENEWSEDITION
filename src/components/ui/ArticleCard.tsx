@@ -1,5 +1,6 @@
 import type { Article } from '../../data/news'
 import { articleHref } from '../../hooks/useCategoryRoute'
+import { useLanguage } from '../../i18n/language'
 import AuthorChip from './AuthorChip'
 import CategoryTag from './CategoryTag'
 
@@ -10,6 +11,8 @@ interface ArticleCardProps {
 }
 
 export default function ArticleCard({ article, showCategory = true, showDate = false }: ArticleCardProps) {
+  const { tr } = useLanguage()
+
   return (
     <article className="group flex flex-col">
       <div className="aspect-[4/3] overflow-hidden rounded-2xl">
@@ -29,10 +32,10 @@ export default function ArticleCard({ article, showCategory = true, showDate = f
         className={`line-clamp-3 text-base leading-snug font-semibold text-ink ${showCategory ? 'mt-1' : 'mt-4'}`}
       >
         <a href={articleHref(article)} className="hover:text-accent">
-          {article.title}
+          {tr(article.title)}
         </a>
       </h4>
-      <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-ink/55">{article.excerpt}</p>
+      <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-ink/55">{tr(article.excerpt)}</p>
       <div className="mt-auto pt-4">
         <AuthorChip author={article.author} date={showDate ? article.date : undefined} />
       </div>

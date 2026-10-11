@@ -7,6 +7,7 @@ import Highlight from './components/Highlight'
 import LatestNews from './components/LatestNews'
 import Navbar from './components/Navbar'
 import PopularStory from './components/PopularStory'
+import Testimonials from './components/Testimonials'
 import Ticker from './components/Ticker'
 import { useCategoryRoute } from './hooks/useCategoryRoute'
 
@@ -40,6 +41,8 @@ export default function App() {
             <div className={container}>
               <Highlight />
             </div>
+
+            <Testimonials />
           </>
         )}
 

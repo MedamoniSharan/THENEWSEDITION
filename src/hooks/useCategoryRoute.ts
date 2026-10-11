@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { categoryBySlug, slugOf, type Article, type CategoryInfo } from '../data/news'
+import { categoryBySlug, type Article, type CategoryInfo } from '../data/news'
 
 /** Category routes use `#/<slug>`; any other hash (e.g. `#latest`) is a homepage anchor. */
 export const categoryHref = (slug: string) => `#/${slug}`
 export const homeHref = '#/'
 /** There are no article pages yet, so stories open their category. */
-export const articleHref = (article: Article) => categoryHref(slugOf(article.category))
+export const articleHref = (article: Article) => categoryHref(article.category)
 
 interface Route {
   category?: CategoryInfo

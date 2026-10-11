@@ -1,12 +1,15 @@
 import { highlightArticles, highlightFeature } from '../data/news'
+import { useLanguage } from '../i18n/language'
 import ArticleCard from './ui/ArticleCard'
 import FeatureCard from './ui/FeatureCard'
 import SectionHeader from './ui/SectionHeader'
 
 export default function Highlight() {
+  const { t } = useLanguage()
+
   return (
     <section id="highlight" className="scroll-mt-6 py-14 md:py-20">
-      <SectionHeader title="Highlight" />
+      <SectionHeader title={t.highlight} />
 
       <FeatureCard article={highlightFeature} />
 

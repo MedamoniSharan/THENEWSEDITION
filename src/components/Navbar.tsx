@@ -2,33 +2,39 @@ import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { categories } from '../data/news'
 import { categoryHref, homeHref } from '../hooks/useCategoryRoute'
+import { useLanguage } from '../i18n/language'
+import LanguageToggle from './ui/LanguageToggle'
 import Logo from './ui/Logo'
 
 interface NavbarProps {
   activeSlug?: string
 }
 
-const navItems = [
-  { label: 'Home', href: homeHref, slug: undefined },
-  ...categories.map((c) => ({ label: c.name, href: categoryHref(c.slug), slug: c.slug as string })),
-]
-
 export default function Navbar({ activeSlug }: NavbarProps) {
   const [open, setOpen] = useState(false)
+  const { t, tr } = useLanguage()
+
+  const navItems = [
+    { label: t.home, href: homeHref, slug: undefined },
+    ...categories.map((c) => ({ label: tr(c.name), href: categoryHref(c.slug), slug: c.slug as string })),
+  ]
 
   return (
     <header className="relative pt-6 pb-4">
-      <div className="flex items-center justify-between md:justify-center">
+      <div className="relative flex items-center justify-between gap-3 md:justify-center">
         <Logo />
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          className="grid size-10 place-items-center rounded-full bg-white shadow-sm md:hidden"
-          aria-label={open ? 'Close menu' : 'Open menu'}
-          aria-expanded={open}
-        >
-          {open ? <X size={18} /> : <Menu size={18} />}
-        </button>
+        <div className="flex items-center gap-2 md:absolute md:top-1/2 md:right-0 md:-translate-y-1/2">
+          <LanguageToggle />
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            className="grid size-10 place-items-center rounded-full bg-white shadow-sm md:hidden"
+            aria-label={open ? t.closeMenu : t.openMenu}
+            aria-expanded={open}
+          >
+            {open ? <X size={18} /> : <Menu size={18} />}
+          </button>
+        </div>
       </div>
 
       <nav
@@ -38,7 +44,7 @@ export default function Navbar({ activeSlug }: NavbarProps) {
           const active = item.slug === activeSlug
           return (
             <a
-              key={item.label}
+              key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
               aria-current={active ? 'page' : undefined}
