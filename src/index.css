@@ -29,6 +29,12 @@
   }
 }
 
+html.intro-pending,
+html.intro-pending body {
+  background: #000;
+  overflow: hidden;
+}
+
 /* Unlayered so it beats the tight leading/tracking utilities: Telugu vowel signs reach above and below the line. */
 :lang(te) :is(h1, h2, h3, h4) {
   line-height: 1.4;

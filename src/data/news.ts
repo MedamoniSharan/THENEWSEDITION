@@ -66,7 +66,6 @@ export const categoryBySlug = (slug: string) => categories.find((c) => c.slug ==
 
 export interface Author {
   name: Localized
-  avatar: string
 }
 
 export interface Article {
@@ -84,11 +83,11 @@ const img = (id: string, w = 1200) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`
 
 const authors = {
-  lilyGrace: { name: { en: 'Lily Grace', te: 'లిల్లీ గ్రేస్' }, avatar: img('1494790108377-be9c29b29330', 96) },
-  marcusReed: { name: { en: 'Marcus Reed', te: 'మార్కస్ రీడ్' }, avatar: img('1500648767791-00dcc994a43e', 96) },
-  sofiaLane: { name: { en: 'Sofia Lane', te: 'సోఫియా లేన్' }, avatar: img('1438761681033-6461ffad8d80', 96) },
-  danielCho: { name: { en: 'Daniel Cho', te: 'డేనియల్ చో' }, avatar: img('1472099645785-5658abf4ff4e', 96) },
-  emmaHart: { name: { en: 'Emma Hart', te: 'ఎమ్మా హార్ట్' }, avatar: img('1544005313-94ddf0286df2', 96) },
+  lilyGrace: { name: { en: 'Lily Grace', te: 'లిల్లీ గ్రేస్' } },
+  marcusReed: { name: { en: 'Marcus Reed', te: 'మార్కస్ రీడ్' } },
+  sofiaLane: { name: { en: 'Sofia Lane', te: 'సోఫియా లేన్' } },
+  danielCho: { name: { en: 'Daniel Cho', te: 'డేనియల్ చో' } },
+  emmaHart: { name: { en: 'Emma Hart', te: 'ఎమ్మా హార్ట్' } },
 } satisfies Record<string, Author>
 
 export const heroArticle: Article = {

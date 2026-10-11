@@ -3,6 +3,7 @@ import CtaBanner from './components/CtaBanner'
 import FeaturedGrid from './components/FeaturedGrid'
 import Footer from './components/Footer'
 import HeroSearch from './components/HeroSearch'
+import IntroSplash from './components/IntroSplash'
 import Highlight from './components/Highlight'
 import LatestNews from './components/LatestNews'
 import Navbar from './components/Navbar'
@@ -19,6 +20,9 @@ export default function App() {
   return (
     <div className="min-h-screen overflow-x-hidden">
       <div className={container}>
+        <div className="pt-4">
+          <Ticker />
+        </div>
         <Navbar activeSlug={category?.slug} />
       </div>
 
@@ -32,7 +36,6 @@ export default function App() {
             <div className={container}>
               <HeroSearch />
               <FeaturedGrid />
-              <Ticker />
               <LatestNews />
             </div>
 
@@ -52,6 +55,7 @@ export default function App() {
       </main>
 
       <Footer />
+      <IntroSplash />
     </div>
   )
 }

@@ -14,6 +14,12 @@
       rel="stylesheet"
     />
     <title>TheNewsEdition</title>
+    <script>
+      // Decided before React loads so the page starts black instead of flashing the site first.
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('intro-pending')
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

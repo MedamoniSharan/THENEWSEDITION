@@ -9,7 +9,7 @@ export default function Ticker() {
   return (
     <section
       aria-label={t.breakingNews}
-      className="mt-8 flex items-center gap-4 overflow-hidden rounded-full bg-white p-1.5 shadow-[0_4px_20px_rgba(0,0,0,0.04)]"
+      className="flex items-center gap-4 overflow-hidden rounded-full bg-white p-1.5 shadow-[0_4px_20px_rgba(0,0,0,0.04)]"
     >
       <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-xs font-semibold text-white">
         <Zap size={14} className="fill-accent text-accent" />

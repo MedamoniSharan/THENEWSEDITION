@@ -1,4 +1,4 @@
-import { instagram, reelCredits, testimonialTiles, type TestimonialTile } from '../data/testimonials'
+import { instagram, testimonialTiles, type TestimonialTile } from '../data/testimonials'
 import { useLanguage } from '../i18n/language'
 import NewsReelTile from './NewsReelTile'
 
@@ -88,19 +88,6 @@ export default function Testimonials() {
             />
           ))}
         </div>
-
-        <p className="mt-4 text-[11px] leading-relaxed text-white/45">
-          {t.reelCredits}{' '}
-          {reelCredits.map((credit, i) => (
-            <span key={credit.url}>
-              {i > 0 && ' · '}
-              <a href={credit.url} target="_blank" rel="noreferrer" className="underline-offset-2 hover:text-white/80 hover:underline">
-                {credit.author}
-              </a>{' '}
-              ({credit.license})
-            </span>
-          ))}
-        </p>
       </div>
     </section>
   )
