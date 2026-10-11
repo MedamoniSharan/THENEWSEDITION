@@ -1,70 +1,60 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Volume2, VolumeX } from 'lucide-react'
 import { useLanguage } from '../i18n/language'
 
 const FADE_MS = 600
 /** Skip the intro if the video hasn't started by then (slow network). */
 const START_TIMEOUT_MS = 4000
 const MAX_DURATION_MS = 12000
-/** Events that count as a user gesture, which browsers require before playing sound. */
-const GESTURE_EVENTS = ['pointerup', 'keydown', 'touchend'] as const
 
 /** The inline script in `index.html` adds this class when the intro should play. */
 const introPending = () => document.documentElement.classList.contains('intro-pending')
 
+/**
+ * `starting`: trying to autoplay with sound. `waiting`: the browser blocked sound, so we wait for a tap,
+ * which browsers accept as permission to play audio.
+ */
+type Phase = 'starting' | 'waiting' | 'playing' | 'leaving' | 'done'
+
 export default function IntroSplash() {
   const { t } = useLanguage()
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [phase, setPhase] = useState<'playing' | 'leaving' | 'done'>(() => (introPending() ? 'playing' : 'done'))
-  const [muted, setMuted] = useState(false)
-  /** Browsers block sound until the visitor interacts; the first gesture then turns it on. */
-  const [blockedByBrowser, setBlockedByBrowser] = useState(false)
+  const tapRef = useRef<HTMLButtonElement>(null)
+  const [phase, setPhase] = useState<Phase>(() => (introPending() ? 'starting' : 'done'))
 
-  const finish = useCallback(() => setPhase((p) => (p === 'playing' ? 'leaving' : p)), [])
-
-  const applyMuted = useCallback((next: boolean) => {
-    const video = videoRef.current
-    if (video) video.muted = next
-    setMuted(next)
-  }, [])
+  const finish = useCallback(
+    () => setPhase((p) => (p === 'starting' || p === 'waiting' || p === 'playing' ? 'leaving' : p)),
+    [],
+  )
 
   useEffect(() => {
-    if (phase !== 'playing') return
+    if (phase !== 'starting') return
     const video = videoRef.current
     if (!video) return
     let cancelled = false
 
     video.muted = false
-    video.play().catch((err: DOMException) => {
-      if (cancelled) return
-      if (err.name !== 'NotAllowedError') return finish()
-      video.muted = true
-      setMuted(true)
-      setBlockedByBrowser(true)
-      video.play().catch(() => !cancelled && finish())
-    })
+    video
+      .play()
+      .then(() => !cancelled && setPhase('playing'))
+      .catch((err: DOMException) => {
+        if (cancelled) return
+        if (err.name === 'NotAllowedError') setPhase('waiting')
+        else finish()
+      })
 
-    const startTimer = setTimeout(() => {
-      if (video.currentTime === 0) finish()
-    }, START_TIMEOUT_MS)
-    const maxTimer = setTimeout(finish, MAX_DURATION_MS)
+    const timer = setTimeout(finish, START_TIMEOUT_MS)
     return () => {
       cancelled = true
-      clearTimeout(startTimer)
-      clearTimeout(maxTimer)
+      clearTimeout(timer)
     }
   }, [phase, finish])
 
   useEffect(() => {
-    if (!blockedByBrowser) return
-    const onGesture = (e: Event) => {
-      if (e.target instanceof Element && e.target.closest('[data-sound-toggle]')) return
-      applyMuted(false)
-      setBlockedByBrowser(false)
-    }
-    GESTURE_EVENTS.forEach((type) => document.addEventListener(type, onGesture, { capture: true }))
-    return () => GESTURE_EVENTS.forEach((type) => document.removeEventListener(type, onGesture, { capture: true }))
-  }, [blockedByBrowser, applyMuted])
+    if (phase === 'waiting') tapRef.current?.focus()
+    if (phase !== 'playing') return
+    const timer = setTimeout(finish, MAX_DURATION_MS)
+    return () => clearTimeout(timer)
+  }, [phase, finish])
 
   useEffect(() => {
     if (phase !== 'leaving') return
@@ -82,6 +72,17 @@ export default function IntroSplash() {
       clearTimeout(timer)
     }
   }, [phase])
+
+  const playAfterTap = () => {
+    const video = videoRef.current
+    if (!video) return finish()
+    video.muted = false
+    video.currentTime = 0
+    video
+      .play()
+      .then(() => setPhase('playing'))
+      .catch(finish)
+  }
 
   if (phase === 'done') return null
 
@@ -101,28 +102,19 @@ export default function IntroSplash() {
         aria-hidden
         className="size-full object-contain portrait:scale-125"
       />
-      <div className="absolute right-5 bottom-5 flex gap-2">
+      {phase === 'waiting' && (
         <button
+          ref={tapRef}
           type="button"
-          data-sound-toggle
-          onClick={() => {
-            applyMuted(!muted)
-            setBlockedByBrowser(false)
-          }}
-          aria-label={muted ? t.unmuteIntro : t.muteIntro}
-          aria-pressed={muted}
-          className="grid size-9 place-items-center rounded-full bg-white/10 text-white/80 backdrop-blur transition-colors hover:bg-white/20 hover:text-white"
+          onClick={playAfterTap}
+          className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-black text-white outline-none"
         >
-          {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+          <img src="/brand/logo-badge.webp" width={320} height={306} alt="" className="h-28 w-auto md:h-36" />
+          <span className="animate-pulse rounded-full border border-white/25 px-6 py-2.5 text-sm font-semibold tracking-wide">
+            {t.tapToEnter}
+          </span>
         </button>
-        <button
-          type="button"
-          onClick={finish}
-          className="rounded-full bg-white/10 px-4 py-2 text-xs font-semibold text-white/80 backdrop-blur transition-colors hover:bg-white/20 hover:text-white"
-        >
-          {t.skipIntro}
-        </button>
-      </div>
+      )}
     </div>
   )
 }
