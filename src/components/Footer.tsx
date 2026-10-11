@@ -50,7 +50,7 @@ export default function Footer() {
     <footer className="bg-ink text-white">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 pt-16 pb-10 sm:px-6 md:grid-cols-[auto_1fr] lg:px-8">
         <div className="flex gap-8 md:flex-col md:items-start">
-          <Logo variant="dark" showText={false} />
+          <Logo variant="badge" className="h-16 md:h-20" />
           <span className="hidden h-24 w-px bg-accent md:block" aria-hidden />
           <ul className="flex gap-3 md:mt-auto md:flex-col">
             {socials.map((s) => (

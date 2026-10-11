@@ -1,27 +1,21 @@
 interface LogoProps {
-  variant?: 'light' | 'dark'
-  showText?: boolean
+  /** `main` is the wide wordmark for light backgrounds; `badge` is the round sub logo. */
+  variant?: 'main' | 'badge'
+  className?: string
 }
 
-export default function Logo({ variant = 'light', showText = true }: LogoProps) {
-  const isDark = variant === 'dark'
+const sources = {
+  main: { src: '/brand/logo-main.webp', width: 720, height: 238 },
+  badge: { src: '/brand/logo-badge.webp', width: 320, height: 306 },
+} as const
+
+export default function Logo({ variant = 'main', className }: LogoProps) {
+  const { src, width, height } = sources[variant]
+  const sizeClass = className ?? (variant === 'main' ? 'h-14 md:h-20' : 'h-16')
 
   return (
-    <a href="#" className="inline-flex items-center gap-2" aria-label="TheNewsEdition home">
-      <span
-        className={`grid size-8 place-items-center rounded-full border-2 ${isDark ? 'border-white' : 'border-ink'}`}
-      >
-        <svg viewBox="0 0 24 24" className="size-4" aria-hidden>
-          <path d="M5 5h14v3.5h-5.25V19h-3.5V8.5H5z" className="fill-accent" />
-        </svg>
-      </span>
-      {showText && (
-        <span
-          className={`text-sm font-bold tracking-[0.18em] ${isDark ? 'text-white' : 'text-ink'}`}
-        >
-          THENEWSEDITION
-        </span>
-      )}
+    <a href="#" className="inline-flex shrink-0 items-center" aria-label="TheNewsEdition home">
+      <img src={src} width={width} height={height} alt="The News Edition" className={`${sizeClass} w-auto`} />
     </a>
   )
 }
