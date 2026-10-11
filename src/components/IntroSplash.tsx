@@ -1,60 +1,58 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useLanguage } from '../i18n/language'
 
 const FADE_MS = 600
 /** Skip the intro if the video hasn't started by then (slow network). */
 const START_TIMEOUT_MS = 4000
 const MAX_DURATION_MS = 12000
+/** Events that count as a user gesture, which browsers require before playing sound. */
+const GESTURE_EVENTS = ['pointerup', 'keydown', 'touchend'] as const
 
 /** The inline script in `index.html` adds this class when the intro should play. */
 const introPending = () => document.documentElement.classList.contains('intro-pending')
 
-/**
- * `starting`: trying to autoplay with sound. `waiting`: the browser blocked sound, so we wait for a tap,
- * which browsers accept as permission to play audio.
- */
-type Phase = 'starting' | 'waiting' | 'playing' | 'leaving' | 'done'
-
 export default function IntroSplash() {
-  const { t } = useLanguage()
   const videoRef = useRef<HTMLVideoElement>(null)
-  const tapRef = useRef<HTMLButtonElement>(null)
-  const [phase, setPhase] = useState<Phase>(() => (introPending() ? 'starting' : 'done'))
+  const [phase, setPhase] = useState<'playing' | 'leaving' | 'done'>(() => (introPending() ? 'playing' : 'done'))
+  /** Browsers block sound until the visitor interacts; the first gesture then turns it on. */
+  const [blockedByBrowser, setBlockedByBrowser] = useState(false)
 
-  const finish = useCallback(
-    () => setPhase((p) => (p === 'starting' || p === 'waiting' || p === 'playing' ? 'leaving' : p)),
-    [],
-  )
+  const finish = useCallback(() => setPhase((p) => (p === 'playing' ? 'leaving' : p)), [])
 
   useEffect(() => {
-    if (phase !== 'starting') return
+    if (phase !== 'playing') return
     const video = videoRef.current
     if (!video) return
     let cancelled = false
 
     video.muted = false
-    video
-      .play()
-      .then(() => !cancelled && setPhase('playing'))
-      .catch((err: DOMException) => {
-        if (cancelled) return
-        if (err.name === 'NotAllowedError') setPhase('waiting')
-        else finish()
-      })
+    video.play().catch((err: DOMException) => {
+      if (cancelled) return
+      if (err.name !== 'NotAllowedError') return finish()
+      video.muted = true
+      setBlockedByBrowser(true)
+      video.play().catch(() => !cancelled && finish())
+    })
 
-    const timer = setTimeout(finish, START_TIMEOUT_MS)
+    const startTimer = setTimeout(() => {
+      if (video.currentTime === 0) finish()
+    }, START_TIMEOUT_MS)
+    const maxTimer = setTimeout(finish, MAX_DURATION_MS)
     return () => {
       cancelled = true
-      clearTimeout(timer)
+      clearTimeout(startTimer)
+      clearTimeout(maxTimer)
     }
   }, [phase, finish])
 
   useEffect(() => {
-    if (phase === 'waiting') tapRef.current?.focus()
-    if (phase !== 'playing') return
-    const timer = setTimeout(finish, MAX_DURATION_MS)
-    return () => clearTimeout(timer)
-  }, [phase, finish])
+    if (!blockedByBrowser) return
+    const onGesture = () => {
+      if (videoRef.current) videoRef.current.muted = false
+      setBlockedByBrowser(false)
+    }
+    GESTURE_EVENTS.forEach((type) => document.addEventListener(type, onGesture, { capture: true }))
+    return () => GESTURE_EVENTS.forEach((type) => document.removeEventListener(type, onGesture, { capture: true }))
+  }, [blockedByBrowser])
 
   useEffect(() => {
     if (phase !== 'leaving') return
@@ -72,17 +70,6 @@ export default function IntroSplash() {
       clearTimeout(timer)
     }
   }, [phase])
-
-  const playAfterTap = () => {
-    const video = videoRef.current
-    if (!video) return finish()
-    video.muted = false
-    video.currentTime = 0
-    video
-      .play()
-      .then(() => setPhase('playing'))
-      .catch(finish)
-  }
 
   if (phase === 'done') return null
 
@@ -102,19 +89,6 @@ export default function IntroSplash() {
         aria-hidden
         className="size-full object-contain portrait:scale-125"
       />
-      {phase === 'waiting' && (
-        <button
-          ref={tapRef}
-          type="button"
-          onClick={playAfterTap}
-          className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-black text-white outline-none"
-        >
-          <img src="/brand/logo-badge.webp" width={320} height={306} alt="" className="h-28 w-auto md:h-36" />
-          <span className="animate-pulse rounded-full border border-white/25 px-6 py-2.5 text-sm font-semibold tracking-wide">
-            {t.tapToEnter}
-          </span>
-        </button>
-      )}
     </div>
   )
 }
