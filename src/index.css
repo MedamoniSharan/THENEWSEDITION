@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --color-accent: #ff4d1f;
+  --color-accent-dark: #e63e12;
+  --color-ink: #1c1c1c;
+  --color-ink-soft: #2a2a2a;
+  --color-paper: #f7f7f5;
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+  }
+}
+
+@utility corner-cut-l {
+  background: radial-gradient(circle at 0 0, transparent calc(var(--r) - 0.5px), var(--cut) var(--r));
+}
+
+@utility corner-cut-r {
+  background: radial-gradient(circle at 100% 0, transparent calc(var(--r) - 0.5px), var(--cut) var(--r));
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
