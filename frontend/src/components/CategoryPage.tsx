@@ -1,0 +1,129 @@
+import { ChevronRight } from 'lucide-react'
+import { useContent } from '../content/context'
+import type { Category } from '../content/types'
+import { prefetchCategory, useCategoryArticles } from '../content/useCategoryArticles'
+import { categoryHref, homeHref } from '../hooks/useCategoryRoute'
+import { useLanguage } from '../i18n/language'
+import ArticleCard from './ui/ArticleCard'
+import FeatureCard from './ui/FeatureCard'
+
+interface CategoryPageProps {
+  category: Category
+}
+
+function Skeleton() {
+  return (
+    <div className="mt-8 animate-pulse" aria-hidden>
+      <div className="h-[440px] rounded-[28px] bg-ink/10 md:h-[560px]" />
+      <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-6">
+        {[0, 1, 2].map((i) => (
+          <div key={i}>
+            <div className="aspect-[4/3] rounded-2xl bg-ink/10" />
+            <div className="mt-4 h-4 w-3/4 rounded bg-ink/10" />
+            <div className="mt-2 h-3 w-1/2 rounded bg-ink/10" />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default function CategoryPage({ category }: CategoryPageProps) {
+  const { t, tr } = useLanguage()
+  const { categories } = useContent()
+  const { articles, total, ready, loading, failed, hasMore, loadMore, retry } = useCategoryArticles(category.slug)
+  const [lead, ...rest] = articles
+  const name = tr(category.name)
+
+  return (
+    <section className="pt-6 pb-14 md:pt-10 md:pb-20">
+      <nav aria-label={t.breadcrumb} className="flex items-center gap-1.5 text-xs text-ink/50">
+        <a href={homeHref} className="hover:text-accent">
+          {t.home}
+        </a>
+        <ChevronRight size={14} aria-hidden />
+        <span className="font-medium text-ink">{name}</span>
+      </nav>
+
+      <div className="mt-4 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <h1 className="text-4xl font-semibold tracking-tight text-ink md:text-6xl">{name}</h1>
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink/60 md:text-base">{tr(category.description)}</p>
+        </div>
+        {ready && (
+          <span className="w-fit shrink-0 rounded-full bg-white px-4 py-2 text-xs font-semibold text-ink shadow-sm">
+            {t.storyCount(total)}
+          </span>
+        )}
+      </div>
+
+      <div className="no-scrollbar -mx-4 mt-8 flex gap-2 overflow-x-auto px-4 pb-1">
+        {categories.map((c) => {
+          const active = c.slug === category.slug
+          return (
+            <a
+              key={c.slug}
+              href={categoryHref(c.slug)}
+              onPointerEnter={() => prefetchCategory(c.slug)}
+              aria-current={active ? 'page' : undefined}
+              className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
+                active ? 'bg-accent text-white' : 'bg-white text-ink/70 hover:bg-ink hover:text-white'
+              }`}
+            >
+              {tr(c.name)}
+            </a>
+          )
+        })}
+      </div>
+
+      {!ready ? (
+        failed ? (
+          <div className="mt-8 rounded-[28px] bg-white px-6 py-16 text-center">
+            <p className="text-lg font-semibold text-ink">{t.loadFailed}</p>
+            <button
+              type="button"
+              onClick={retry}
+              className="mt-4 rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white hover:bg-accent-dark"
+            >
+              {t.tryAgain}
+            </button>
+          </div>
+        ) : (
+          <Skeleton />
+        )
+      ) : lead ? (
+        <>
+          <div className="mt-8">
+            <FeatureCard article={lead} tone="accent" showCategory={false} />
+          </div>
+
+          {rest.length > 0 && (
+            <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-6 lg:gap-y-10">
+              {rest.map((article) => (
+                <ArticleCard key={article.id} article={article} showCategory={false} showDate />
+              ))}
+            </div>
+          )}
+
+          {hasMore && (
+            <div className="mt-12 flex justify-center">
+              <button
+                type="button"
+                onClick={loadMore}
+                disabled={loading}
+                className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-black disabled:opacity-60"
+              >
+                {failed ? t.tryAgain : t.loadMore}
+              </button>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="mt-8 rounded-[28px] bg-white px-6 py-16 text-center">
+          <p className="text-lg font-semibold text-ink">{t.noStories(name)}</p>
+          <p className="mt-2 text-sm text-ink/60">{t.noStoriesHint}</p>
+        </div>
+      )}
+    </section>
+  )
+}
