@@ -101,6 +101,12 @@ authRouter.get('/me', async (req, res) => {
   res.json(admin ? { email: admin.email } : null)
 })
 
+authRouter.get('/password', requireAdmin, async (req, res) => {
+  const admin = await Admin.findById(req.adminId).select('password').lean()
+  res.setHeader('Cache-Control', 'no-store')
+  res.json({ password: admin?.password ?? '' })
+})
+
 authRouter.post('/password', requireAdmin, passwordAttempts(), async (req, res) => {
   const { current, next } = passwordInput.parse(req.body)
   const admin = await Admin.findById(req.adminId)

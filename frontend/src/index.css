@@ -35,6 +35,27 @@ html.intro-pending body {
   overflow: hidden;
 }
 
+/* Placeholder while an image downloads; mid-grey so it reads on both light and dark sections. */
+.img-loading {
+  background: linear-gradient(100deg, rgb(128 128 128 / 0.12) 35%, rgb(128 128 128 / 0.26) 50%, rgb(128 128 128 / 0.12) 65%) 0 0 / 300% 100%;
+  animation: img-shimmer 1.4s linear infinite;
+}
+
+@keyframes img-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .img-loading {
+    animation: none;
+  }
+}
+
 /* Unlayered so it beats the tight leading/tracking utilities: Telugu vowel signs reach above and below the line. */
 :lang(te) :is(h1, h2, h3, h4) {
   line-height: 1.4;

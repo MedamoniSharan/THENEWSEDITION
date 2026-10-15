@@ -14,6 +14,82 @@
       rel="stylesheet"
     />
     <title>TheNewsEdition</title>
+    <style>
+      /* Page loader: inline so it shows before the CSS and app code arrive; React reuses these classes. */
+      html.intro-pending,
+      html.intro-pending body {
+        background: #000;
+      }
+      .tne-loader {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        place-content: center;
+        gap: 24px;
+        background: #f7f7f5;
+        animation: tne-loader-in 0.3s ease-out 0.3s both;
+      }
+      .intro-pending .tne-loader,
+      .tne-loader--dark {
+        background: #000;
+      }
+      .tne-loader--instant {
+        animation: none;
+      }
+      .tne-loader img {
+        width: auto;
+        height: 112px;
+        animation: tne-loader-breathe 1.8s ease-in-out infinite;
+      }
+      .tne-loader-bar {
+        position: relative;
+        width: 160px;
+        height: 3px;
+        overflow: hidden;
+        border-radius: 3px;
+        background: rgba(28, 28, 28, 0.1);
+      }
+      .intro-pending .tne-loader-bar,
+      .tne-loader--dark .tne-loader-bar {
+        background: rgba(255, 255, 255, 0.16);
+      }
+      .tne-loader-bar::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        width: 40%;
+        border-radius: inherit;
+        background: #d90b0b;
+        animation: tne-loader-slide 1.1s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+      }
+      @keyframes tne-loader-in {
+        from {
+          opacity: 0;
+        }
+      }
+      @keyframes tne-loader-breathe {
+        50% {
+          transform: scale(1.05);
+        }
+      }
+      @keyframes tne-loader-slide {
+        from {
+          transform: translateX(-100%);
+        }
+        to {
+          transform: translateX(250%);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .tne-loader img {
+          animation: none;
+        }
+        .tne-loader-bar::after {
+          animation-duration: 2.4s;
+        }
+      }
+    </style>
     <script>
       if (!/^\/admin(\/|$)/.test(location.pathname)) {
         // Start downloading the site content in parallel with the app code.
@@ -31,7 +107,12 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="tne-loader" role="status" aria-label="Loading">
+        <img src="/brand/logo-badge.webp" width="320" height="306" alt="" />
+        <span class="tne-loader-bar"></span>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

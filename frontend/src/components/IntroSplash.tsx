@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { mediaUrl } from '../content/api'
 import { useContentState } from '../content/context'
+import { useLanguage } from '../i18n/language'
+import PageLoader from './ui/PageLoader'
 
 const FADE_MS = 600
 /** Skip the intro if the video hasn't started by then (slow network). */
@@ -18,6 +20,8 @@ export default function IntroSplash() {
   const [requestedPhase, setPhase] = useState<'playing' | 'leaving' | 'done'>(() => (introPending() ? 'playing' : 'done'))
   /** Browsers block sound until the visitor interacts; the first gesture then turns it on. */
   const [blockedByBrowser, setBlockedByBrowser] = useState(false)
+  const [started, setStarted] = useState(false)
+  const { t } = useLanguage()
 
   const intro = content?.settings.intro
   const src = intro?.enabled && intro.video ? mediaUrl(intro.video) : null
@@ -96,12 +100,14 @@ export default function IntroSplash() {
           src={src}
           playsInline
           preload="auto"
+          onPlaying={() => setStarted(true)}
           onEnded={finish}
           onError={finish}
           aria-hidden
           className="size-full object-contain portrait:scale-125"
         />
       )}
+      {!started && phase === 'playing' && <PageLoader dark label={t.loading} />}
     </div>
   )
 }

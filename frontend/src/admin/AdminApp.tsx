@@ -22,7 +22,8 @@ import Link from './Link'
 import { usePath } from './router'
 import { toast } from './toast'
 import Toaster from './Toaster'
-import { Button, Field, Input, LoadingBlock } from './ui'
+import PageLoader from '../components/ui/PageLoader'
+import { Button, Field, Input } from './ui'
 import Account from './pages/Account'
 import Articles from './pages/Articles'
 import Categories from './pages/Categories'
@@ -196,7 +197,7 @@ function Gate() {
     staleTime: Infinity,
   })
 
-  if (me.isPending) return <LoadingBlock />
+  if (me.isPending) return <PageLoader />
   if (me.isError) {
     return (
       <div className="grid min-h-screen place-items-center px-4 text-center">
