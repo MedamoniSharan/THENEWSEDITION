@@ -8,12 +8,15 @@ interface LogoProps {
 
 const sources = {
   main: { src: '/brand/logo-main.webp', width: 720, height: 238 },
+  /** Telugu wordmark ("The న్యూస్ EDITION") for the wide logo. */
+  mainTe: { src: '/brand/logo-main-te.webp', width: 720, height: 288 },
   badge: { src: '/brand/logo-badge.webp', width: 320, height: 306 },
 } as const
 
 export default function Logo({ variant = 'main', className }: LogoProps) {
-  const { t } = useLanguage()
-  const { src, width, height } = sources[variant]
+  const { t, lang } = useLanguage()
+  const source = variant === 'main' && lang === 'te' ? sources.mainTe : sources[variant]
+  const { src, width, height } = source
   const sizeClass = className ?? (variant === 'main' ? 'h-14 md:h-20' : 'h-16')
 
   return (
